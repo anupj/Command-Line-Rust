@@ -16,12 +16,24 @@ type MyResult<T> = Result<T, Box<dyn Error>>;
 pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files {
         match open(&filename) {
-            Err(err) => eprintln!("Failed to open {}: {}", filename, err),
+            Err(err) => eprintln!("{}: {}", filename, err),
             Ok(file) => {
-                print!(
-                    "{}",
-                    read(file, config.number_lines, config.number_nonblank_lines)?
-                );
+                let mut last_num = 0;
+                for (line_num, line) in file.lines().enumerate() {
+                    let line = line?;
+                    if config.number_lines {
+                        println!("{:>6}\t{}", line_num + 1, line);
+                    } else if config.number_nonblank_lines {
+                        if !line.is_empty() {
+                            last_num += 1;
+                            println!("{:>6}\t{}", last_num, line);
+                        } else {
+                            println!();
+                        }
+                    } else {
+                        println!("{}", line);
+                    }
+                }
             }
         }
     }
@@ -72,41 +84,4 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
-}
-
-// -------------------------------------------
-fn read(
-    file: Box<dyn BufRead>,
-    number_lines: bool,
-    number_nonblank_lines: bool,
-) -> MyResult<String> {
-    let mut file_content = String::new();
-
-    if !number_lines && !number_nonblank_lines {
-        for line in file.lines() {
-            let line = line.unwrap();
-            file_content.push_str(format!("{}\n", line).as_str());
-        }
-    } else {
-        let mut line_number = 0u32;
-        for line in file.lines() {
-            let mut skip = false;
-            let line = line.unwrap();
-            if number_lines || (number_nonblank_lines && !line.eq("")) {
-                line_number = line_number + 1;
-            } else {
-                skip = true;
-            }
-
-            if !skip {
-                file_content.push_str(
-                    format!("     {}\t{}\n", line_number.to_string().as_str(), line).as_str(),
-                );
-            } else {
-                file_content.push_str(format!("{}\n", line).as_str());
-            }
-        }
-    }
-
-    Ok(file_content)
 }
