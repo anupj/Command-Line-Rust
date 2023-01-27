@@ -156,12 +156,7 @@ pub fn count(mut file: impl BufRead) -> MyResult<FileInfo> {
         line.clear();
     }
 
-    Ok(FileInfo {
-        num_lines,
-        num_words,
-        num_bytes,
-        num_chars,
-    })
+    Ok(FileInfo { num_lines, num_words, num_bytes, num_chars })
 }
 
 fn format_field(value: usize, show: bool) -> String {

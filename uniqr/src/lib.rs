@@ -54,7 +54,8 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    let mut file = open(&config.in_file).map_err(|e| format!("{}: {}", config.in_file, e))?;
+    let mut file = open(&config.in_file)
+        .map_err(|e| format!("{}: {}", config.in_file, e))?;
     // `out_file` is a boxed value that
     // implements the `std::io::Write` trait
     let mut out_file: Box<dyn Write> = match &config.out_file {

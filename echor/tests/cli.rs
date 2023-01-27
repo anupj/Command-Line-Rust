@@ -20,9 +20,7 @@ fn run(args: &[&str], expected_file: &str) -> TestResult {
 fn dies_no_args() -> TestResult {
     let mut cmd = Command::cargo_bin("echor").unwrap();
     // calling `echor` without arguments fails
-    cmd.assert()
-        .failure()
-        .stderr(predicate::str::contains("USAGE"));
+    cmd.assert().failure().stderr(predicate::str::contains("USAGE"));
     Ok(())
 }
 

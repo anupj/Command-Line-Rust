@@ -55,11 +55,7 @@ fn skips_bad_file() -> TestResult {
 // --------------------------------------------------
 fn run(args: &[&str], expected_file: &str) -> TestResult {
     let expected = fs::read_to_string(expected_file)?;
-    Command::cargo_bin(PRG)?
-        .args(args)
-        .assert()
-        .success()
-        .stdout(expected);
+    Command::cargo_bin(PRG)?.args(args).assert().success().stdout(expected);
     Ok(())
 }
 
@@ -157,10 +153,7 @@ fn spiders_n() -> TestResult {
 // --------------------------------------------------
 #[test]
 fn spiders_b() -> TestResult {
-    run(
-        &["--number-nonblank", SPIDERS],
-        "tests/expected/spiders.txt.b.out",
-    )
+    run(&["--number-nonblank", SPIDERS], "tests/expected/spiders.txt.b.out")
 }
 
 // --------------------------------------------------
