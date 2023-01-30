@@ -41,7 +41,11 @@ pub fn run(config: Config) -> MyResult<()> {
             Err(e) => eprintln!("{}", e),
             Ok(filename) => match open(&filename) {
                 Err(e) => eprintln!("{}: {}", filename, e),
-                Ok(file) => match find_lines(file, &config.pattern, config.invert_match) {
+                Ok(file) => match find_lines(
+                    file,
+                    &config.pattern,
+                    config.invert_match,
+                ) {
                     Err(e) => eprintln!("{}", e),
                     Ok(matches) => {
                         if config.count {
@@ -172,16 +176,24 @@ fn find_files(paths: &[String], recursive: bool) -> Vec<MyResult<String>> {
                                 .flatten()
                                 .filter(|e| e.file_type().is_file())
                             {
-                                results.push(Ok(entry.path().display().to_string()));
+                                results.push(Ok(entry
+                                    .path()
+                                    .display()
+                                    .to_string()));
                             }
                         } else {
-                            results.push(Err(From::from(format!("{} is a directory", path))));
+                            results.push(Err(From::from(format!(
+                                "{} is a directory",
+                                path
+                            ))));
                         }
                     } else if metadata.is_file() {
                         results.push(Ok(path.to_string()));
                     }
                 }
-                Err(e) => results.push(Err(From::from(format!("{}: {}", path, e)))),
+                Err(e) => {
+                    results.push(Err(From::from(format!("{}: {}", path, e))))
+                }
             },
         }
     }
@@ -212,10 +224,8 @@ mod tests {
         assert_eq!(matches.unwrap().len(), 2);
 
         // This regex will be case-insensitive
-        let re2 = RegexBuilder::new("or")
-            .case_insensitive(true)
-            .build()
-            .unwrap();
+        let re2 =
+            RegexBuilder::new("or").case_insensitive(true).build().unwrap();
 
         // The two lines "Lorem" and "DOLOR" should match
         let matches = find_lines(Cursor::new(&text), &re2, false);

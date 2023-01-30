@@ -74,10 +74,7 @@ fn run(args: &[&str], expected_file: &str) -> TestResult {
 
     let expected = fs::read_to_string(&expected_file)?;
 
-    Command::cargo_bin(PRG)?
-        .args(args)
-        .assert()
-        .stdout(expected);
+    Command::cargo_bin(PRG)?.args(args).assert().stdout(expected);
     Ok(())
 }
 
@@ -96,10 +93,7 @@ fn empty_regex() -> TestResult {
 // --------------------------------------------------
 #[test]
 fn bustle_capitalized() -> TestResult {
-    run(
-        &["The", BUSTLE],
-        "tests/expected/bustle.txt.the.capitalized",
-    )
+    run(&["The", BUSTLE], "tests/expected/bustle.txt.the.capitalized")
 }
 
 // --------------------------------------------------
@@ -126,10 +120,7 @@ fn nobody() -> TestResult {
 // --------------------------------------------------
 #[test]
 fn nobody_insensitive() -> TestResult {
-    run(
-        &["-i", "nobody", NOBODY],
-        "tests/expected/nobody.txt.insensitive",
-    )
+    run(&["-i", "nobody", NOBODY], "tests/expected/nobody.txt.insensitive")
 }
 
 // --------------------------------------------------
@@ -153,10 +144,7 @@ fn multiple_files_insensitive() -> TestResult {
 // --------------------------------------------------
 #[test]
 fn recursive() -> TestResult {
-    run(
-        &["--recursive", "dog", INPUTS_DIR],
-        "tests/expected/dog.recursive",
-    )
+    run(&["--recursive", "dog", INPUTS_DIR], "tests/expected/dog.recursive")
 }
 
 // --------------------------------------------------
@@ -266,8 +254,7 @@ fn stdin_insensitive_count() -> TestResult {
         input += &fs::read_to_string(file)?;
     }
 
-    let expected_file =
-        "tests/expected/the.recursive.insensitive.count.stdin";
+    let expected_file = "tests/expected/the.recursive.insensitive.count.stdin";
     let expected = fs::read_to_string(expected_file)?;
 
     Command::cargo_bin(PRG)?
