@@ -62,48 +62,33 @@ fn dies_not_enough_args() -> TestResult {
 #[test]
 fn dies_bad_digit_field() -> TestResult {
     let bad = random_string();
-    dies(
-        &[CSV, "-f", &bad],
-        &format!("illegal list value: \"{}\"", &bad),
-    )
+    dies(&[CSV, "-f", &bad], &format!("illegal list value: \"{}\"", &bad))
 }
 
 // --------------------------------------------------
 #[test]
 fn dies_bad_digit_bytes() -> TestResult {
     let bad = random_string();
-    dies(
-        &[CSV, "-b", &bad],
-        &format!("illegal list value: \"{}\"", &bad),
-    )
+    dies(&[CSV, "-b", &bad], &format!("illegal list value: \"{}\"", &bad))
 }
 
 // --------------------------------------------------
 #[test]
 fn dies_bad_digit_chars() -> TestResult {
     let bad = random_string();
-    dies(
-        &[CSV, "-c", &bad],
-        &format!("illegal list value: \"{}\"", &bad),
-    )
+    dies(&[CSV, "-c", &bad], &format!("illegal list value: \"{}\"", &bad))
 }
 
 // --------------------------------------------------
 #[test]
 fn dies_empty_delimiter() -> TestResult {
-    dies(
-        &[CSV, "-f", "1", "-d", ""],
-        "--delim \"\" must be a single byte",
-    )
+    dies(&[CSV, "-f", "1", "-d", ""], "--delim \"\" must be a single byte")
 }
 
 // --------------------------------------------------
 #[test]
 fn dies_bad_delimiter() -> TestResult {
-    dies(
-        &[CSV, "-f", "1", "-d", ",,"],
-        "--delim \",,\" must be a single byte",
-    )
+    dies(&[CSV, "-f", "1", "-d", ",,"], "--delim \",,\" must be a single byte")
 }
 
 // --------------------------------------------------
@@ -150,11 +135,7 @@ fn dies_chars_bytes() -> TestResult {
 fn run(args: &[&str], expected_file: &str) -> TestResult {
     println!("expected {}", &expected_file);
     let expected = fs::read_to_string(expected_file)?;
-    Command::cargo_bin(PRG)?
-        .args(args)
-        .assert()
-        .success()
-        .stdout(expected);
+    Command::cargo_bin(PRG)?.args(args).assert().success().stdout(expected);
     Ok(())
 }
 
